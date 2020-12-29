@@ -18,6 +18,7 @@
 	<Button text="func2" prefWidth="100"/>
 	<Button text="func3" prefWidth="100"/>
 	<Button text="func4" prefWidth="100"/>
+  <Button text="debug" prefWidth="100" onAction="#debugButtonAction"/>
       </children>
     </HBox>
     <GridPane fx:id="mapGrid" prefWidth="360" prefHeight="360" >

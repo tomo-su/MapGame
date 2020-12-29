@@ -11,27 +11,21 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.AudioClip;
+import java.io.File;
 
 public class MapGameController implements Initializable {
     public MapData mapData;
     public MoveChara chara;
     public GridPane mapGrid;
     public ImageView[] mapImageViews;
+    /** BGMを扱う変数 */
+    public AudioClip ac;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        mapData = new MapData(21, 15);
-        chara = new MoveChara(1, 1, mapData);
-        mapImageViews = new ImageView[mapData.getHeight()*mapData.getWidth()];
-        for(int y=0; y<mapData.getHeight(); y++){
-            for(int x=0; x<mapData.getWidth(); x++){
-                int index = y*mapData.getWidth() + x;
-                mapImageViews[index] = mapData.getImageView(x,y);
-            }
-        }
-        drawMap(chara, mapData);
+        gameInit();
     }
-
     // Draw the map
     public void drawMap(MoveChara c, MapData m){
         int cx = c.getPosX();
@@ -102,6 +96,42 @@ public class MapGameController implements Initializable {
     // Print actions of user inputs
     public void printAction(String actionString) {
         System.out.println("Action: " + actionString);
+    }
+
+    /**
+     * ゲーム画面を生成
+     */
+    public void gameInit() {
+        mapData = new MapData(21, 15);
+        chara = new MoveChara(1, 1, mapData);
+        mapImageViews = new ImageView[mapData.getHeight()*mapData.getWidth()];
+        for(int y=0; y<mapData.getHeight(); y++){
+            for(int x=0; x<mapData.getWidth(); x++){
+                int index = y*mapData.getWidth() + x;
+                mapImageViews[index] = mapData.getImageView(x,y);
+            }
+        }
+        drawMap(chara, mapData);
+        playMusic();
+    }
+
+    /**
+     * ゲーム画面の再生成のテスト
+     * @param event
+     */
+    public void debugButtonAction(ActionEvent event) {
+        gameInit();
+    }
+
+    /**
+     * 指定したmp3ファイルを再生
+     */
+    public void playMusic() {
+        ac = new AudioClip(new File("./sound/tammb14.mp3").toURI().toString());
+        ac.stop();
+        ac.setVolume(1);
+        ac.setCycleCount(AudioClip.INDEFINITE);
+        ac.play();
     }
 
 }
