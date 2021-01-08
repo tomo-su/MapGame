@@ -63,7 +63,7 @@ public class MoveChara {
     public boolean isMovable(int dx, int dy){
         if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_WALL){
             return false;
-        } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_SPACE){
+        } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_SPACE || mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_KEY){
             return true;
         }
         return false;

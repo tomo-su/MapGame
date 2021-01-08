@@ -21,6 +21,14 @@ public class MapGameController implements Initializable {
     public ImageView[] mapImageViews;
     /** BGMを扱う変数 */
     public AudioClip ac;
+    public AudioClip se; 
+
+    public Label hp;
+    public Label score;
+    public Label count;
+    int HP = 500;
+    int SCORE;
+    int COUNT;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -63,6 +71,9 @@ public class MapGameController implements Initializable {
         chara.setCharaDirection(MoveChara.TYPE_UP);
         chara.move(0, -1);
         drawMap(chara, mapData);
+        setStatus();
+        gettingKey(chara.getPosX(), chara.getPosY());
+        judgeGoal(chara.getPosX(), chara.getPosY());
     }
 
     // Operations for going the cat down
@@ -71,6 +82,9 @@ public class MapGameController implements Initializable {
         chara.setCharaDirection(MoveChara.TYPE_DOWN);
         chara.move(0, 1);
         drawMap(chara, mapData);
+        setStatus();
+        gettingKey(chara.getPosX(), chara.getPosY());
+        judgeGoal(chara.getPosX(), chara.getPosY());
     }
 
     // Operations for going the cat right
@@ -79,6 +93,9 @@ public class MapGameController implements Initializable {
         chara.setCharaDirection(MoveChara.TYPE_LEFT);
         chara.move(-1, 0);
         drawMap(chara, mapData);
+        setStatus();
+        gettingKey(chara.getPosX(), chara.getPosY());
+        judgeGoal(chara.getPosX(), chara.getPosY());
     }
 
     // Operations for going the cat right
@@ -87,6 +104,9 @@ public class MapGameController implements Initializable {
         chara.setCharaDirection(MoveChara.TYPE_RIGHT);
         chara.move(1, 0);
         drawMap(chara, mapData);
+        setStatus();
+        gettingKey(chara.getPosX(), chara.getPosY());
+        judgeGoal(chara.getPosX(), chara.getPosY());
     }
 
     public void func1ButtonAction(ActionEvent event) {
@@ -113,6 +133,10 @@ public class MapGameController implements Initializable {
         }
         drawMap(chara, mapData);
         playMusic();
+        COUNT = 0;
+        hp.setText("HP:" + HP);
+        score.setText("  SCORE:" + SCORE);
+        count.setText("  COUNT:" + COUNT);
     }
 
     /**
@@ -132,6 +156,43 @@ public class MapGameController implements Initializable {
         ac.setVolume(1);
         ac.setCycleCount(AudioClip.INDEFINITE);
         ac.play();
+    }
+
+    public void gettingKey(int x, int y) {
+        if(mapData.getMap(x, y) == 2) {
+            mapData.setMap(x, y, 0);
+            mapData.setImageViews();
+            int index = y*mapData.getWidth() + x;
+            mapImageViews[index] = mapData.getImageView(x, y);
+            drawMap(chara, mapData);
+            COUNT++;
+            count.setText("COUNT: " + COUNT);
+            se = new AudioClip(new File("./sound/pickupkey.mp3").toURI().toString());
+            se.setVolume(10);
+            se.play();
+        }
+    }
+
+    public void judgeGoal(int x, int y) {
+        if(x == 19 && y == 13  && COUNT == 4) {
+            gameInit();           
+        }
+        return;
+    }
+
+    public void setStatus() {
+        HP -=  1;
+        System.out.println("HP:"+ hp);
+        SCORE = 500 - (500-HP);
+        System.out.println("SCORE:" + SCORE);
+        hp.setText("HP:" + HP);
+        score.setText("  SCORE:" + SCORE);
+        if(HP == 0){
+            chara = new MoveChara(1,1,mapData);
+            HP = 500;
+            SCORE -= 500;
+            System.out.println("GameOver!!");
+        }
     }
 
 }
