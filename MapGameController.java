@@ -19,31 +19,49 @@ public class MapGameController implements Initializable {
     public MoveChara chara;
     public GridPane mapGrid;
     public ImageView[] mapImageViews;
-    /** BGMを扱う変数 */
+    /** BGM */
     public AudioClip ac;
+    /** SE */
     public AudioClip se; 
 
+    /** hp (label)*/
     public Label hp;
+    /** score (label) */
     public Label score;
+    /** アイテムのcount (label) */
     public Label count;
+    /** hp */
     int HP = 500;
+    /** score */
     int SCORE;
+    /** count */
     int COUNT;
+
+    /** enemy  */
+    public Enemy enemy;
+
+    public Label text;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         gameInit();
     }
     // Draw the map
-    public void drawMap(MoveChara c, MapData m){
+    public void drawMap(MoveChara c, Enemy e, MapData m){
         int cx = c.getPosX();
         int cy = c.getPosY();
+        int ex = e.getPosX();
+        int ey = e.getPosY();
         mapGrid.getChildren().clear();
         for(int y=0; y<mapData.getHeight(); y++){
             for(int x=0; x<mapData.getWidth(); x++){
                 int index = y*mapData.getWidth() + x;
-                if (x==cx && y==cy) {
+                if(x==cx && y==cy && x==ex && y==ey) {
+                    mapGrid.add(e.getCatVsEmemyImageView(), x, y);
+                } else if (x==cx && y==cy) {
                     mapGrid.add(c.getCharaImageView(), x, y);
+                } else if (x==ex && y==ey) {
+                    mapGrid.add(e.getEnemyImageView(), x, y);
                 } else {
                     mapGrid.add(mapImageViews[index], x, y);
                 }
@@ -70,10 +88,7 @@ public class MapGameController implements Initializable {
         printAction("UP");
         chara.setCharaDirection(MoveChara.TYPE_UP);
         chara.move(0, -1);
-        drawMap(chara, mapData);
-        setStatus();
-        gettingKey(chara.getPosX(), chara.getPosY());
-        judgeGoal(chara.getPosX(), chara.getPosY());
+        processMove();
     }
 
     // Operations for going the cat down
@@ -81,10 +96,7 @@ public class MapGameController implements Initializable {
         printAction("DOWN");
         chara.setCharaDirection(MoveChara.TYPE_DOWN);
         chara.move(0, 1);
-        drawMap(chara, mapData);
-        setStatus();
-        gettingKey(chara.getPosX(), chara.getPosY());
-        judgeGoal(chara.getPosX(), chara.getPosY());
+        processMove();
     }
 
     // Operations for going the cat right
@@ -92,10 +104,7 @@ public class MapGameController implements Initializable {
         printAction("LEFT");
         chara.setCharaDirection(MoveChara.TYPE_LEFT);
         chara.move(-1, 0);
-        drawMap(chara, mapData);
-        setStatus();
-        gettingKey(chara.getPosX(), chara.getPosY());
-        judgeGoal(chara.getPosX(), chara.getPosY());
+        processMove();
     }
 
     // Operations for going the cat right
@@ -103,10 +112,7 @@ public class MapGameController implements Initializable {
         printAction("RIGHT");
         chara.setCharaDirection(MoveChara.TYPE_RIGHT);
         chara.move(1, 0);
-        drawMap(chara, mapData);
-        setStatus();
-        gettingKey(chara.getPosX(), chara.getPosY());
-        judgeGoal(chara.getPosX(), chara.getPosY());
+        processMove();
     }
 
     public void func1ButtonAction(ActionEvent event) {
@@ -123,7 +129,8 @@ public class MapGameController implements Initializable {
      */
     public void gameInit() {
         mapData = new MapData(21, 15);
-        chara = new MoveChara(1, 1, mapData);
+        enemy = new Enemy(1, 1, mapData);
+        chara = new MoveChara(1, 1, mapData, enemy);
         mapImageViews = new ImageView[mapData.getHeight()*mapData.getWidth()];
         for(int y=0; y<mapData.getHeight(); y++){
             for(int x=0; x<mapData.getWidth(); x++){
@@ -131,12 +138,13 @@ public class MapGameController implements Initializable {
                 mapImageViews[index] = mapData.getImageView(x,y);
             }
         }
-        drawMap(chara, mapData);
+        drawMap(chara, enemy, mapData);
         playMusic();
         COUNT = 0;
         hp.setText("HP:" + HP);
         score.setText("  SCORE:" + SCORE);
         count.setText("  COUNT:" + COUNT);
+        text.setText("  HELLO WORLD");
     }
 
     /**
@@ -158,21 +166,31 @@ public class MapGameController implements Initializable {
         ac.play();
     }
 
+    /**
+     * アイテムの取得
+     * @param x　キャラのx座標
+     * @param y  キャラのy座標
+     */
     public void gettingKey(int x, int y) {
         if(mapData.getMap(x, y) == 2) {
             mapData.setMap(x, y, 0);
             mapData.setImageViews();
             int index = y*mapData.getWidth() + x;
             mapImageViews[index] = mapData.getImageView(x, y);
-            drawMap(chara, mapData);
+            drawMap(chara, enemy, mapData);
             COUNT++;
-            count.setText("COUNT: " + COUNT);
+            count.setText("  COUNT: " + COUNT);
             se = new AudioClip(new File("./sound/pickupkey.mp3").toURI().toString());
             se.setVolume(10);
             se.play();
         }
     }
 
+    /**
+     * 次のステージにいけるかの判定
+     * @param x　キャラのx座標
+     * @param y　キャラのy座標
+     */
     public void judgeGoal(int x, int y) {
         if(x == 19 && y == 13  && COUNT == 4) {
             gameInit();           
@@ -180,6 +198,9 @@ public class MapGameController implements Initializable {
         return;
     }
 
+    /**
+     * labelに数値を反映
+     */
     public void setStatus() {
         HP -=  1;
         System.out.println("HP:"+ hp);
@@ -188,11 +209,19 @@ public class MapGameController implements Initializable {
         hp.setText("HP:" + HP);
         score.setText("  SCORE:" + SCORE);
         if(HP == 0){
-            chara = new MoveChara(1,1,mapData);
+            chara = new MoveChara(1,1,mapData, enemy);
             HP = 500;
             SCORE -= 500;
             System.out.println("GameOver!!");
         }
+    }
+
+    public void processMove() {
+        enemy.moveDicider();
+        drawMap(chara, enemy, mapData);
+        setStatus();
+        gettingKey(chara.getPosX(), chara.getPosY());
+        judgeGoal(chara.getPosX(), chara.getPosY());
     }
 
 }

@@ -23,11 +23,12 @@
     </HBox>
     <GridPane fx:id="mapGrid" prefWidth="360" prefHeight="360" >
     </GridPane>
-    <HBox prefHeight="50">
+    <HBox prefWidth="360" prefHeight="50">
       <children>
         <Label fx:id="hp"/>
         <Label fx:id="score"/>
         <Label fx:id="count"/>
+        <Label fx:id="text"/>
       </children>
     </HBox>
   </children>

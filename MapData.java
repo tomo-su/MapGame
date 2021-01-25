@@ -4,6 +4,7 @@ import javafx.scene.image.ImageView;
 public class MapData {
     public static final int TYPE_SPACE = 0;
     public static final int TYPE_WALL = 1;
+    /** アイテム */
     public static final int TYPE_KEY = 2;
     private static final String mapImageFiles[] = {
         "png/SPACE.png",
@@ -101,7 +102,9 @@ public class MapData {
             }
         }
     }
-
+   /**
+    * アイテムの配置
+    */
    public void randompick(){
       int key=0;
       int randomx;
