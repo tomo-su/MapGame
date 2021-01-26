@@ -40,8 +40,6 @@ public class MapGameController implements Initializable {
     /** enemy  */
     public Enemy enemy;
 
-    public Label text;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         gameInit();
@@ -144,7 +142,6 @@ public class MapGameController implements Initializable {
         hp.setText("HP:" + HP);
         score.setText("  SCORE:" + SCORE);
         count.setText("  COUNT:" + COUNT);
-        text.setText("  HELLO WORLD");
     }
 
     /**

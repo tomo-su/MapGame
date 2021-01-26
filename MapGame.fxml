@@ -28,7 +28,6 @@
         <Label fx:id="hp"/>
         <Label fx:id="score"/>
         <Label fx:id="count"/>
-        <Label fx:id="text"/>
       </children>
     </HBox>
   </children>
