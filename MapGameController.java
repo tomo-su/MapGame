@@ -188,11 +188,14 @@ public class MapGameController implements Initializable {
      * @param x　キャラのx座標
      * @param y　キャラのy座標
      */
-    public void judgeGoal(int x, int y) {
-        if(x == 19 && y == 13  && COUNT == 4) {
-            gameInit();           
+    public void judgeGoal(MoveChara c, Enemy e) {
+        if(c.getPosX() == 19 && c.getPosY() == 13  && COUNT == 4) {
+            gameInit();
+            return;        
         }
-        return;
+        if(e.getPosX() == 19 && e.getPosY() == 13) {
+            gameInit();
+        }
     }
 
     /**
@@ -218,7 +221,7 @@ public class MapGameController implements Initializable {
         drawMap(chara, enemy, mapData);
         setStatus();
         gettingKey(chara.getPosX(), chara.getPosY());
-        judgeGoal(chara.getPosX(), chara.getPosY());
+        judgeGoal(chara, enemy);
     }
 
 }
