@@ -14,16 +14,16 @@
   <children>
     <HBox prefHeight="50">
       <children>
-        <Button text="func1" prefWidth="100" onAction="#func1ButtonAction"/>
-	      <Button text="func2" prefWidth="100"/>
-	      <Button text="func3" prefWidth="100"/>
-	      <Button text="func4" prefWidth="100"/>
-        <Button text="debug" prefWidth="100" onAction="#debugButtonAction"/>
+        <Button text="会話1" prefWidth="100" onAction="#func1ButtonAction"/>
+	      <Button text="会話2" prefWidth="100" onAction="#func2ButtonAction"/>
+	      <Button text="会話3" prefWidth="100" onAction="#func3ButtonAction"/>
+	      <Button text="会話4" prefWidth="100" onAction="#func4ButtonAction"/>
+        <Button text="reset" prefWidth="100" onAction="#debugButtonAction"/>
       </children>
     </HBox>
     <GridPane fx:id="mapGrid" prefWidth="360" prefHeight="360" >
     </GridPane>
-    <HBox prefWidth="360" prefHeight="50">
+    <HBox prefWidth="360" prefHeight="30">
       <children>
         <Label fx:id="hp"/>
         <Label fx:id="score"/>

@@ -52,6 +52,16 @@ public class Enemy {
   }
 
   public ImageView getCatVsEmemyImageView() {
+    int r = (int)(Math.random()*4);
+    if (r == 0) {
+        MapGame.setMessage(2,"間抜けな面してんな！");;
+    } else if (r == 1) {
+        MapGame.setMessage(2, "勝てるわけないよ、あきらめな");
+    } else if (r == 2) {
+        MapGame.setMessage(2, "先に行ってるぜ");
+    } else if (r == 3) {
+        MapGame.setMessage(2, "負けるわけにはいかないからな");
+    }
     return new ImageView(new Image(pngPathBeforeCatVsEnemy + pngPathAfter));
   }
 
@@ -82,8 +92,8 @@ public class Enemy {
   }
 
   public void moveDicider() {
-    int[][] randoms = {{0,1},{1,0},{0,1},{1,0},{0,-1},{-1,0}};
-    int moves[] = randoms[(int) (Math.random() * 6)];
+    int[][] randoms = {{0,1},{1,0},{0,-1},{-1,0}};
+    int moves[] = randoms[(int) (Math.random() * 4)];
     if(!move(moves[0], moves[1])) {
       moveDicider();
     }

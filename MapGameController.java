@@ -40,6 +40,8 @@ public class MapGameController implements Initializable {
     /** enemy  */
     public Enemy enemy;
 
+    int talk = 0;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         gameInit();
@@ -71,21 +73,37 @@ public class MapGameController implements Initializable {
     public void keyAction(KeyEvent event){
         KeyCode key = event.getCode(); System.out.println("keycode:"+key);
         if (key == KeyCode.H){
-        	leftButtonAction();
+            leftButtonAction();
         }else if (key == KeyCode.J){
             downButtonAction(); 
         }else if (key == KeyCode.K){
             upButtonAction();
         }else if (key == KeyCode.L){
             rightButtonAction();
+        } else {
+            MapGame.setMessage(1, "移動はH・J・K・Lキーやで");
         }
-    }
+        if(talk == 1) {
+            MapGame.setMessage(1, "わいは猫やけどな");
+        } else if(talk == 2) {
+            MapGame.setMessage(1, "こうげきしかできんやろ");
+        } else if(talk == 3) {
+            MapGame.setMessage(1, "それ頭悪いやつのセリフや");
+        } else if(talk == 4) {
+            MapGame.setMessage(1, "すみません、よく聞こえません。");
+        }
+        talk = 0;
+     }
 
     // Operations for going the cat down
     public void upButtonAction(){
         printAction("UP");
         chara.setCharaDirection(MoveChara.TYPE_UP);
-        chara.move(0, -1);
+        if (chara.move(0, -1)) {
+            MapGame.setMessage(1, "ほな壁と違うか");
+        } else {
+            MapGame.setMessage(1, "壁やないか！");
+        }
         processMove();
     }
 
@@ -93,7 +111,11 @@ public class MapGameController implements Initializable {
     public void downButtonAction(){
         printAction("DOWN");
         chara.setCharaDirection(MoveChara.TYPE_DOWN);
-        chara.move(0, 1);
+        if (chara.move(0, 1)) {
+            MapGame.setMessage(1, "ほな壁と違うか");
+        } else {
+            MapGame.setMessage(1, "壁やないか！");
+        }
         processMove();
     }
 
@@ -101,7 +123,11 @@ public class MapGameController implements Initializable {
     public void leftButtonAction(){
         printAction("LEFT");
         chara.setCharaDirection(MoveChara.TYPE_LEFT);
-        chara.move(-1, 0);
+        if (chara.move(-1, 0)) {
+            MapGame.setMessage(1, "ほな壁と違うか");
+        } else {
+            MapGame.setMessage(1, "壁やないか！");
+        }
         processMove();
     }
 
@@ -109,12 +135,32 @@ public class MapGameController implements Initializable {
     public void rightButtonAction(){
         printAction("RIGHT");
         chara.setCharaDirection(MoveChara.TYPE_RIGHT);
-        chara.move(1, 0);
+        if (chara.move(1, 0)) {
+            MapGame.setMessage(1, "ほな壁と違うか");
+        } else {
+            MapGame.setMessage(1, "壁やないか！");
+        }
         processMove();
     }
 
     public void func1ButtonAction(ActionEvent event) {
-        System.out.println("func1: Nothing to do");
+        MapGame.setMessage(2, "愚かな人間は生きてる資格などない");
+        talk = 1;
+    }
+
+    public void func2ButtonAction(ActionEvent event) {
+        MapGame.setMessage(2, "ゴブリンが吐く炎、どれだけ熱いか知ってるか？");
+        talk = 2;
+    }
+
+    public void func3ButtonAction(ActionEvent event) {
+        MapGame.setMessage(2, "ゴブリンは頭悪いと思っているのか？本当の頭の良さをみせてやる！");
+        talk = 3;
+    }
+
+    public void func4ButtonAction(ActionEvent event) {
+        MapGame.setMessage(2, "ガアアアア！ゴブリンの雄叫び！どうだ？びっくりしたか？");
+        talk = 4;
     }
 
     // Print actions of user inputs
@@ -156,7 +202,7 @@ public class MapGameController implements Initializable {
      * 指定したmp3ファイルを再生
      */
     public void playMusic() {
-        ac = new AudioClip(new File("./sound/tammb14.mp3").toURI().toString());
+        ac = new AudioClip(new File("./sound/konekonoosanpo.mp3").toURI().toString());
         ac.stop();
         ac.setVolume(1);
         ac.setCycleCount(AudioClip.INDEFINITE);
@@ -180,6 +226,15 @@ public class MapGameController implements Initializable {
             se = new AudioClip(new File("./sound/pickupkey.mp3").toURI().toString());
             se.setVolume(10);
             se.play();
+            if (COUNT == 1) {
+                MapGame.setMessage(1, "鍵を手に入れた！4つ集めるとゴールできるかも...");
+            } else if (COUNT == 2){
+                MapGame.setMessage(1, "もう2つ目？！早い、早すぎる…");
+            } else if (COUNT == 3) {
+                MapGame.setMessage(1, "あと1つや！");
+            } else {
+                MapGame.setMessage(1, "この勝負もろたで！");
+            }
         }
     }
 
@@ -189,12 +244,39 @@ public class MapGameController implements Initializable {
      * @param y　キャラのy座標
      */
     public void judgeGoal(MoveChara c, Enemy e) {
-        if(c.getPosX() == 19 && c.getPosY() == 13  && COUNT == 4) {
+        if(c.getPosX() == 19 && c.getPosY() == 13) {
+            if(COUNT == 4) {
             gameInit();
-            return;        
+            int r1 = (int)(Math.random()*5);
+            if(r1==0){
+                MapGame.setMessage(1, "他愛ないな");
+            }else if(r1==1){
+                MapGame.setMessage(1, "さっすがおれだな");
+            }else if(r1==2){
+                MapGame.setMessage(1, "相手が悪かっただけだよ");
+            }else if(r1==3){
+                MapGame.setMessage(1, "努力のたまものだよ");
+            }else{
+                MapGame.setMessage(1, "君はもう、おしまいです");
+            }
+        } else {
+            MapGame.setMessage(1, "鍵がなくてゴールでけへん！");
+        }
+            return;
         }
         if(e.getPosX() == 19 && e.getPosY() == 13) {
             gameInit();
+            int r2 = (int)(Math.random()*4);
+            if(r2==0){
+                MapGame.setMessage(1, "オレが…負けたのか？");
+            }else if(r2==1){
+                MapGame.setMessage(1, "やるじゃねえか…");
+            }else if(r2==2){
+                MapGame.setMessage(1, "ちくしょう、覚えてろよ！");
+            }else{
+                MapGame.setMessage(1, "お前ごときにぃ…");
+            }
+            return;
         }
     }
 
@@ -202,6 +284,7 @@ public class MapGameController implements Initializable {
      * labelに数値を反映
      */
     public void setStatus() {
+        int r = (int)(Math.random()*5);
         HP -=  1;
         System.out.println("HP:"+ hp);
         SCORE = 500 - (500-HP);
@@ -209,6 +292,17 @@ public class MapGameController implements Initializable {
         hp.setText("HP:" + HP);
         score.setText("  SCORE:" + SCORE);
         if(HP == 0){
+            if(r==0){
+                MapGame.setMessage(1, "もうダメだ動けない");
+            }else if(r==1){
+                MapGame.setMessage(1, "ちくしょう");
+            }else if(r==2){
+                MapGame.setMessage(1, "おれのまけだ");
+            }else if(r==3){
+                MapGame.setMessage(1, "ぐぎゃぁ！");
+            }else{
+                MapGame.setMessage(1, "あびゃぁ！");
+            }
             chara = new MoveChara(1,1,mapData, enemy);
             HP = 500;
             SCORE -= 500;
