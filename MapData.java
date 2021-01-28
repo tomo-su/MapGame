@@ -4,10 +4,12 @@ import javafx.scene.image.ImageView;
 public class MapData {
     public static final int TYPE_SPACE = 0;
     public static final int TYPE_WALL = 1;
-    public static final int TYPE_OTHERS = 2;
+    /** アイテム */
+    public static final int TYPE_KEY = 2;
     private static final String mapImageFiles[] = {
         "png/SPACE.png",
-        "png/WALL.png"
+        "png/WALL.png",
+        "png/key.png",
     };
 
     private Image[] mapImages;
@@ -17,9 +19,9 @@ public class MapData {
     private int height;
 
     MapData(int x, int y){
-        mapImages = new Image[2];
+        mapImages = new Image[3];
         mapImageViews = new ImageView[y][x];
-        for (int i=0; i<2; i++) {
+        for (int i=0; i<3; i++) {
             mapImages[i] = new Image(mapImageFiles[i]);
         }
 
@@ -29,6 +31,7 @@ public class MapData {
 
         fillMap(MapData.TYPE_WALL);
         digMap(1, 3);
+        randompick();
         setImageViews();
     }
 
@@ -98,5 +101,21 @@ public class MapData {
 
             }
         }
+    }
+   /**
+    * アイテムの配置
+    */
+   public void randompick(){
+      int key=0;
+      int randomx;
+      int randomy;
+      while(key<4){
+        randomx=(int)(Math.random()*width);
+        randomy=(int)(Math.random()*height);
+        if(getMap(randomx, randomy) == MapData.TYPE_SPACE && randomx != 1 &&  randomy != 1){
+          setMap(randomx, randomy, MapData.TYPE_KEY);
+          key++;
+        }
+      }
     }
 }

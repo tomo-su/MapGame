@@ -1,6 +1,5 @@
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Rectangle;
 import javafx.animation.AnimationTimer;
 
 public class MoveChara {
@@ -23,9 +22,9 @@ public class MoveChara {
     private ImageView[] charaImageViews;
     private ImageAnimation[] charaImageAnimations;
 
-	private int charaDirection;
+    private int charaDirection;
 
-    MoveChara(int startX, int startY, MapData mapData){
+    MoveChara(int startX, int startY, MapData mapData, Enemy enemy){
         this.mapData = mapData;
 
         charaImages = new Image[4][3];
@@ -38,7 +37,7 @@ public class MoveChara {
                 charaImages[i][j] = new Image(pngPathBefore + directions[i] + animationNumbers[j] + pngPathAfter);
             }
             charaImageViews[i] = new ImageView(charaImages[i][0]);
-            charaImageAnimations[i] = new ImageAnimation( charaImageViews[i], charaImages[i] );
+            charaImageAnimations[i] = new ImageAnimation( charaImageViews[i], charaImages[i]);
         }
 
         posX = startX;
@@ -63,7 +62,7 @@ public class MoveChara {
     public boolean isMovable(int dx, int dy){
         if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_WALL){
             return false;
-        } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_SPACE){
+        } else if (mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_SPACE || mapData.getMap(posX+dx, posY+dy) == MapData.TYPE_KEY){
             return true;
         }
         return false;
@@ -108,7 +107,7 @@ public class MoveChara {
         private long preCount;
         private boolean isPlus = true;
 
-        public ImageAnimation( ImageView charaView , Image[] images ) {
+        public ImageAnimation( ImageView charaView , Image[] images) {
             this.charaView = charaView;
             this.charaImages = images;
             this.index = 0;
@@ -116,6 +115,7 @@ public class MoveChara {
 
         @Override
         public void handle( long now ) {
+
             if( startTime == 0 ){ startTime = now; }
 
             preCount = count;
